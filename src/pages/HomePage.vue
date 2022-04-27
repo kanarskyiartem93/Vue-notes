@@ -1,59 +1,43 @@
 <template>
-  <Form @onSubmit="handleSubmit"/>
-  <NoteList @onRemove="handleRemove" :items="notes"/>
+  <br>
+  <br>
+  {{user}}
+  <div v-if="isUserLogged">
+    User is logged
+  </div>
+  <div v-else>
+    <button @click="handleLoginClick" class="btn btnPrimary">Login</button>
+  </div>
 </template>
-
 <script>
-import Form from "@/components/Notes/NoteForm";
-import NoteList from "@/components/Notes/NoteList";
 
 export default {
   name: "HomePage",
-  components: {
-    NoteList,
-    Form
-  },
   data() {
     return {
-      notes: [
-        {
-          title: 'Learn Vue',
-          tags: ['work']
-        },
-        {
-          title: 'Finish course',
-          tags: ['work', 'home']
-        },
-        {
-          title: 'hello world',
-          tags: []
-        }
-      ]
+      userId: 3
     }
   },
-  mounted() {
-    this.getItems()
-  },
-  watch: {
-    notes: {
-      handler(updatedList) {
-        localStorage.setItem('notes', JSON.stringify(updatedList))
-      },
-      deep: true
+  methods:{
+    handleLoginClick(){
+      this.$store.dispatch('setUser')
     }
   },
-  methods: {
-    handleSubmit(note) {
-      this.notes.push({ title: note.title, tags: note.tags })
+  computed: {
+    user(){
+      return this.$store.getters.getUser
     },
-    handleRemove(index) {
-      this.notes.splice(index, 1)
+    isUserLogged(){
+      return this.$store.getters.isUserLogged
     },
-    getItems() {
-      const localNotes = localStorage.getItem('notes')
-      if (localNotes) {
-        this.notes = JSON.parse(localNotes)
-      }
+    getUsers() {
+      return this.$store.getters.getUsers
+    },
+    getTotalUsers() {
+      return this.$store.getters.getUsersLength
+    },
+    getUser() {
+      return this.$store.getters.getUserById(this.userId)
     }
   }
 }
